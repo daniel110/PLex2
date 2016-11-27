@@ -39,6 +39,16 @@ def eval_arith_expr(e, s):
     elif type(e) is Minus:
         return eval_arith_expr(e.a1, s) - eval_arith_expr(e.a2, s)
 
+
+    elif type(e) is BitAnd:
+        return eval_arith_expr(e.a1, s) & eval_arith_expr(e.a2, s)
+
+    elif type(e) is BitShiftLeft:
+        return eval_arith_expr(e.a1, s) << eval_arith_expr(e.a2, s)
+
+    elif type(e) is BitShiftRight:
+        return eval_arith_expr(e.a1, s) >> eval_arith_expr(e.a2, s)
+
     else:
         assert False # Error
 
@@ -52,28 +62,39 @@ def eval_bool_expr(e, s):
     --- MODIFY THIS FUNCTION IN QUESTION 1 ---
 
     """
+    result = True
 
     if type(e) is BLit:
-        return e.value
+        result = e.value
 
     elif type(e) is Eq:
-        return eval_arith_expr(e.a1, s) == eval_arith_expr(e.a2, s)
+        result = eval_arith_expr(e.a1, s) == eval_arith_expr(e.a2, s)
 
     elif type(e) is LE:
-        return eval_arith_expr(e.a1, s) <= eval_arith_expr(e.a2, s)
+        result = eval_arith_expr(e.a1, s) <= eval_arith_expr(e.a2, s)
 
     elif type(e) is Not:
-        return not eval_bool_expr(e.b, s)
+        result = not whileToPythonBool(eval_bool_expr(e.b, s))
 
     elif type(e) is And:
-        return eval_bool_expr(e.b1, s) and eval_bool_expr(e.b2, s)
+        result = whileToPythonBool(eval_bool_expr(e.b1, s)) and whileToPythonBool(eval_bool_expr(e.b2, s))
 
     elif type(e) is Or:
-        return eval_bool_expr(e.b1, s) or eval_bool_expr(e.b2, s)
+        result = whileToPythonBool(eval_bool_expr(e.b1, s)) or whileToPythonBool(eval_bool_expr(e.b2, s))
 
     else:
         assert False # Error
 
+    if result:
+        return tt
+    else:
+        return ff
+
+def whileToPythonBool(a):
+    if tt == a:
+        return True
+    else:
+        return False
 
 if __name__ == '__main__':
     # (x + 1) * (x - 1)

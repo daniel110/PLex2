@@ -35,26 +35,26 @@ def nos_tree(S, s):
         premises = (t1, t2)
         post_state = spp
 
-    elif type(S) is If and eval_bool_expr(S.b, s) is True:
+    elif type(S) is If and eval_bool_expr(S.b, s) == tt:
         rule = 'if_tt'
         sp, t = nos_tree(S.S1, s)
         premises = (t, )
         post_state = sp
 
-    elif type(S) is If and eval_bool_expr(S.b, s) is False:
+    elif type(S) is If and eval_bool_expr(S.b, s) == ff:
         rule = 'if_ff'
         sp, t = nos_tree(S.S2, s)
         premises = (t, )
         post_state = sp
 
-    elif type(S) is While and eval_bool_expr(S.b, s) is True:
+    elif type(S) is While and eval_bool_expr(S.b, s) == tt:
         rule = 'while_tt'
         sp, t1 = nos_tree(S.S, s)
         spp, t2 = nos_tree(While(S.b, S.S), sp)
         premises = (t1, t2)
         post_state = spp
 
-    elif type(S) is While and eval_bool_expr(S.b, s) is False:
+    elif type(S) is While and eval_bool_expr(S.b, s) == ff:
         rule = 'while_ff'
         premises = ()
         post_state = s
@@ -79,6 +79,25 @@ if __name__ == '__main__':
     print tree
     print
     view_tree(tree)
+
+    egypt = Comp(Assign('a', ALit(84)),
+                 Comp(Assign('b', ALit(22)),
+                      Comp(Assign('c', ALit(0)),
+                           While(Not(Eq(Var('b'), ALit(0))),
+                                 Comp(If(Not(Eq(BitAnd(Var('b'), ALit(1)), ALit(0))),
+                                         Assign('c', Plus(Var('c'), Var('a'))),
+                                         Skip()),
+                                      Comp(Assign('a', BitShiftLeft(Var('a'), ALit(1))),
+                                           Assign('b', BitShiftRight(Var('b'), ALit(1)))))
+                                 ))))
+
+    s, tree = nos_tree(egypt, {})
+    print s
+    print
+    print tree
+    print
+    view_tree(tree)
+
 
     #
     # --- ADD MORE TESTS HERE ---
