@@ -59,6 +59,25 @@ def nos_tree(S, s):
         premises = ()
         post_state = s
 
+    elif type(S) is Repeat: #and eval_bool_expr(S.b, nos_tree(S.S,s)[0]) == tt:
+        print S
+        print S.S
+        print s
+        sp, t1 = nos_tree(S.b, s)
+        if eval_bool_expr(S.S,sp) == tt:
+            rule = 'repeat_tt'
+            premises = (t1, )
+            post_state = sp
+        else:
+            rule = 'repeat_ff'
+            spp, t2 = nos_tree(Repeat(S.b,S.S), sp)
+            premises = (t1, t2)
+            post_state = spp
+    
+
+
+
+
     else:
         assert False # Error
 
@@ -98,7 +117,12 @@ if __name__ == '__main__':
     print
     view_tree(tree)
 
-
+    my_test=While(Not(Eq(Var('x'),ALit(5))),Assign('x',Minus(Var('x'),ALit(5))))
+    s,tree=nos_tree(my_test,{'x':55})
+    
+    prog3=Repeat(Assign('x',Minus(Var('x'),ALit(5))),Eq(Var('x'),ALit(5)))
+    s,tree=nos_tree(prog3, {'x':15})
+    view_tree(tree)
     #
     # --- ADD MORE TESTS HERE ---
     #

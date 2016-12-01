@@ -49,6 +49,11 @@ def sos(S, s):
     elif type(S) is While:
         return (If(S.b, Comp(S.S, While(S.b, S.S)), Skip()), s)
 
+    elif type(S) is Repeat:
+        
+        return (Comp(S.b,If(S.S, Skip(), Repeat(S.b,S.S))), s)
+
+
     else:
         assert False # Error
 
@@ -87,7 +92,9 @@ if __name__ == '__main__':
                                  ))))
 
     run_sos(egypt, {})
-
+    prog3=Repeat(Assign('x',Minus(Var('x'),ALit(5))),Eq(Var('x'),ALit(5)))
+    run_sos(prog3, {'x':15})
+    
     #
     # --- ADD MORE TESTS HERE ---
     #
